@@ -1,10 +1,12 @@
+import { useEffect } from "react";
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { clearUser } from "../redux/apiCalls";
 
 const Container = styled.div`
   height: 60px;
@@ -68,8 +70,18 @@ const MenuItem = styled.div`
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
+
+
 const Navbar = () => {
   const quantity = useSelector((state) => state.cart.quantity);
+  const user = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
+
   return (
     <Container>
       <Wrapper>
@@ -79,6 +91,9 @@ const Navbar = () => {
             <Input placeholder="Search" />
             <Search style={{ color: "gray", fontSize: 16 }} />
           </SearchContainer>
+          <Link to="/addProduct">
+          <Logo>Add Product</Logo>
+          </Link>
         </Left>
         <Center>
           <Link to="/">
@@ -86,12 +101,23 @@ const Navbar = () => {
           </Link>
         </Center>
         <Right>
-          <Link to="/register">
-            <MenuItem>REGISTER</MenuItem>
-          </Link>
-          <Link to="/login">
-            <MenuItem>SIGN IN</MenuItem>
-          </Link>
+          {user ? (
+            <div>
+              <h2>Welcome {user.username}</h2>
+
+              <MenuItem onClick={() => clearUser(dispatch)}>SIGN OFF</MenuItem>
+
+            </div>
+          ) : (
+            <div>
+              <Link to="/register">
+                <MenuItem>REGISTER</MenuItem>
+              </Link>
+              <Link to="/login">
+                <MenuItem>SIGN IN</MenuItem>
+              </Link>
+            </div>
+          )}
           <Link to="/cart">
             <MenuItem>
               <Badge badgeContent={quantity} color="primary">

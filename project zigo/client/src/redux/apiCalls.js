@@ -1,6 +1,11 @@
 import { loginFailure, loginStart, loginSuccess } from "./userRedux";
-import { createUserStart, createUserSuccess, createUserFailure } from "./userRedux";
+import { createUserStart, createUserSuccess, createUserFailure, clearUserStart } from "./userRedux";
 import { publicRequest } from "../requestMethods";
+import {
+  addProductFailure,
+  addProductStart,
+  addProductSuccess,
+} from "./productRedux";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -21,3 +26,18 @@ export const createUser = async (dispatch, user) => {
     dispatch(createUserFailure());
   }
 };
+
+export const clearUser = async (dispatch, user) => {
+  dispatch(clearUserStart());
+};
+
+export const addProduct = async (product, dispatch) => {
+  dispatch(addProductStart());
+  try {
+    const res = await publicRequest.post(`/products`, product);
+    dispatch(addProductSuccess(res.data));
+  } catch (err) {
+    dispatch(addProductFailure());
+  }
+};
+
