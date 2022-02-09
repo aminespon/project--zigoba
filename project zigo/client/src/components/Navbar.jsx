@@ -91,9 +91,11 @@ const Navbar = () => {
             <Input placeholder="Search" />
             <Search style={{ color: "gray", fontSize: 16 }} />
           </SearchContainer>
+          {user && user.isAdmin ? (
           <Link to="/addProduct">
           <Logo>Add Product</Logo>
           </Link>
+          ) : (<div/>)}
         </Left>
         <Center>
           <Link to="/">

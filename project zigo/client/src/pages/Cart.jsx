@@ -1,5 +1,5 @@
-import { Add, Remove } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { Add, Remove, Delete } from "@material-ui/icons";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
@@ -9,6 +9,8 @@ import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useHistory } from "react-router";
+import { removeProductFromCart } from "../redux/cartRedux";
+
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -121,6 +123,7 @@ const ProductPrice = styled.div`
   ${mobile({ marginBottom: "20px" })}
 `;
 
+
 const Hr = styled.hr`
   background-color: #eee;
   border: none;
@@ -163,6 +166,8 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [stripeToken, setStripeToken] = useState(null);
   const history = useHistory();
+  const dispatch = useDispatch();
+
 
   const onToken = (token) => {
     setStripeToken(token);
@@ -182,6 +187,16 @@ const Cart = () => {
     };
     stripeToken && makeRequest();
   }, [stripeToken, cart.total, history]);
+
+  const handleClick = (product) => {
+    const newProduct = cart.products.filter((item) => item._id !== product._id);
+    const prix = product.price;
+    console.log(newProduct);
+    dispatch(
+      removeProductFromCart({ ...product})
+    );
+  };
+
   return (
     <Container>
       <Navbar />
@@ -198,7 +213,7 @@ const Cart = () => {
         </Top>
         <Bottom>
           <Info>
-            {cart.products.map((product) => (
+            {cart.products.length > 0  && cart.products.map((product) => (
               <Product>
                 <ProductDetail>
                   <Image src={product.img} />
@@ -220,6 +235,7 @@ const Cart = () => {
                     <Add />
                     <ProductAmount>{product.quantity}</ProductAmount>
                     <Remove />
+                    <Delete onClick={() => handleClick(product)} />
                   </ProductAmountContainer>
                   <ProductPrice>
                     $ {product.price * product.quantity}

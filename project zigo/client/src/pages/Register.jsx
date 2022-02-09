@@ -72,6 +72,7 @@ const Register = () => {
     e.preventDefault();
     createUser(dispatch, { username, email, password, isAdmin });
   };
+
   return (
     <Container>
       <Wrapper>
@@ -83,6 +84,7 @@ const Register = () => {
           <Input placeholder="email"  onChange={(e) => setEmail(e.target.value)} />
           <Input placeholder="password"  onChange={(e) => setPassword(e.target.value)}/>
           <Input placeholder="confirm password" />
+          <Input  type="checkbox" onChange={(e) => setIsAdmin(e.target.checked)} /><span>Admin </span>
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
